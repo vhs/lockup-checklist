@@ -1,3 +1,384 @@
-<html>
-  <h1>Lockup checklist</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VHS Lockup Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1a1e;
+    --card: #232328;
+    --border: #35353a;
+    --text: #e4e4e7;
+    --muted: #8b8b94;
+    --accent: #4ade80;
+    --accent-dim: #22633a;
+    --done-text: #5a5a62;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    max-width: 480px;
+    width: 100%;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  h1 {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .version {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    opacity: 0.5;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 0.4rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .progress-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    opacity: 0.6;
+    text-align: right;
+    margin-bottom: 1.5rem;
+  }
+
+  .section {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.6rem;
+    padding-left: 2px;
+  }
+
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .item:hover { background: rgba(255,255,255,0.03); }
+
+  .item input[type="checkbox"] { display: none; }
+
+  .checkmark {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 2px solid var(--border);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+
+  .checkmark svg {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s;
+  }
+
+  .item.checked .checkmark {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .item.checked .checkmark svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .item.checked .label {
+    color: var(--done-text);
+    text-decoration: line-through;
+    text-decoration-color: var(--done-text);
+  }
+
+  .label {
+    font-size: 0.92rem;
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+
+  .label strong {
+    font-weight: 600;
+  }
+
+  .note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    opacity: 0.6;
+    padding-left: 2.5rem;
+    margin-top: -0.3rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.2rem 0;
+    opacity: 0.5;
+  }
+
+  .done-banner {
+    text-align: center;
+    padding: 1.2rem;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.4s;
+    pointer-events: none;
+    margin-top: 1rem;
+  }
+
+  .done-banner.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reset-btn {
+    display: block;
+    margin: 1.5rem auto 0;
+    padding: 0.5rem 1.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .reset-btn:hover {
+    color: var(--text);
+    border-color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>VHS Lockup</h1>
+    <span class="version">v2025-03</span>
+  </div>
+  <div class="subtitle">Read each item, do it, then check it off.</div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div class="progress-text" id="progressText">0 / 16</div>
+
+  <div class="section">
+    <div class="section-title">1 · Before you start</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Front door</strong> — confirm locked before starting</span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2 · Woodshop — back door</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Back door</strong> — latch secure, all 2 floor pegs in</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Wood shop lights</strong> — switch left of back bay door</span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3 · Machine shop & welding</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Machine shop lights</strong> — switch by the door</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Machine shop</strong> — unoccupied</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Welding shop</strong> — unoccupied</span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="section-title">4 · Main space & lounge</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Tools off</strong> — soldering stations, power supplies, 3D printers</span>
+    </label>
+    <div class="note">Leave 3D printers running only if owner is returning shortly</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Main space 1 lights</strong> — under parabolic reflector, left of free shelf</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Furnace room</strong> — unoccupied</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Server room</strong> — unoccupied</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Washrooms</strong> — unoccupied</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Thermostat</strong> — set lounge to 16°</span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5 · Upstairs & stairs</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Upstairs office lights</strong> — switch by the door</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Main space 2 lights</strong> — switch at top of stairs</span>
+    </label>
+  </div>
+
+  <div class="section">
+    <div class="section-title">6 · "Is VHS Open" widget</div>
+    <div class="note" style="padding-left: 2px; margin-bottom: 0.5rem;">Bottom of stairs — if red readout shows a closing time:</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Widget</strong> — set closing time to 1 min ahead of actual time</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Open sign</strong> — confirm off</span>
+    </label>
+    <div class="note">If sign stays lit but widget is off → unplug sign & post in #Random</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">7 · Exit & lock</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Side door</strong> — locked (west side, near front)</span>
+    </label>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Front door</strong> — lock from outside</span>
+    </label>
+    <div class="note">Close → push lock button on keypad → turn knob CCW</div>
+    <label class="item">
+      <input type="checkbox"><span class="checkmark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#1a1a1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="label"><strong>Front door</strong> — test locked</span>
+    </label>
+  </div>
+
+  <div class="done-banner" id="doneBanner">All clear — space is locked up.</div>
+  <button class="reset-btn" id="resetBtn">Reset checklist</button>
+</div>
+
+<script>
+  const items = document.querySelectorAll('.item');
+  const progress = document.getElementById('progress');
+  const progressText = document.getElementById('progressText');
+  const banner = document.getElementById('doneBanner');
+  const total = items.length;
+
+  function update() {
+    const checked = document.querySelectorAll('.item input:checked').length;
+    progress.style.width = (checked / total * 100) + '%';
+    progressText.textContent = checked + ' / ' + total;
+    banner.classList.toggle('visible', checked === total);
+  }
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      const cb = item.querySelector('input');
+      cb.checked = !cb.checked;
+      item.classList.toggle('checked', cb.checked);
+      update();
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    items.forEach(item => {
+      item.querySelector('input').checked = false;
+      item.classList.remove('checked');
+    });
+    update();
+  });
+</script>
+
+</body>
 </html>
