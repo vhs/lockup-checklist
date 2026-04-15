@@ -9,6 +9,8 @@ This is a static HTML page that contains:
 
 This is hosted at [lockup.vanhack.ca](https://lockup.vanhack.ca), and is local-only i.e. not audited. It's a tool to help you remember everything, nothing more.
 
+Changes to the `index.html` are deployed automatically every 1-2 minutes.
+
 Checklists where you need to actually physically mark items as done have been shown to be more effective than simple 'mental' or 'dot point' checklists, especially in safety critical applications like aviation and medicine.
 Locking up VHS feels like our equivalent of a safety critical operation, so a checklist where you can check each item off feels appropriate.
 
