@@ -54,14 +54,12 @@
     font-family: 'DM Mono', monospace;
     font-size: 0.7rem;
     color: var(--muted);
-    opacity: 0.5;
   }
 
   .subtitle {
     font-size: 0.82rem;
     color: var(--muted);
     margin-bottom: 1.5rem;
-    opacity: 0.7;
   }
 
   .footer-note {
@@ -69,23 +67,33 @@
     margin-top: 2rem;
     font-size: 0.75rem;
     color: var(--muted);
-    opacity: 0.5;
   }
 
   .footer-note a {
     color: var(--accent);
-    text-decoration: none;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    text-decoration: underline;
+    text-decoration-color: rgba(74, 222, 128, 0.4);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s;
   }
  
   .footer-note a:hover {
-    opacity: 1;
-    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+ 
+  .footer-note a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
  
   .footer-note a:visited {
-    color: var(--accent);
+    color: #a5b4fc;
+    text-decoration-color: rgba(165, 180, 252, 0.4);
+  }
+ 
+  .footer-note a:visited:hover {
+    text-decoration-color: #a5b4fc;
   }
 
   .progress-bar {
@@ -109,7 +117,6 @@
     font-family: 'DM Mono', monospace;
     font-size: 0.7rem;
     color: var(--muted);
-    opacity: 0.6;
     text-align: right;
     margin-bottom: 1.5rem;
   }
@@ -192,7 +199,6 @@
   .note {
     font-size: 0.82rem;
     color: var(--muted);
-    opacity: 0.6;
     padding-left: 2.5rem;
     margin-top: -0.3rem;
     margin-bottom: 0.3rem;
