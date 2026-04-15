@@ -11,7 +11,7 @@
     --card: #232328;
     --border: #35353a;
     --text: #e4e4e7;
-    --muted: #8b8b94;
+    --muted: #afafb6;
     --accent: #4ade80;
     --accent-dim: #22633a;
     --done-text: #5a5a62;
@@ -58,10 +58,34 @@
   }
 
   .subtitle {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--muted);
     margin-bottom: 1.5rem;
     opacity: 0.7;
+  }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    opacity: 0.5;
+  }
+
+  .footer-note a {
+    color: var(--accent);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+ 
+  .footer-note a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+ 
+  .footer-note a:visited {
+    color: var(--accent);
   }
 
   .progress-bar {
@@ -96,7 +120,7 @@
 
   .section-title {
     font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0..92rem;
     font-weight: 500;
     color: var(--accent);
     text-transform: uppercase;
@@ -166,7 +190,7 @@
   }
 
   .note {
-    font-size: 0.75rem;
+    font-size: 0.82rem;
     color: var(--muted);
     opacity: 0.6;
     padding-left: 2.5rem;
@@ -224,7 +248,7 @@
 </style>
 </head>
 <body>
-
+  <main>
 <div class="container">
   <div class="header">
     <h1>VHS Lockup</h1>
@@ -346,7 +370,11 @@
 
   <div class="done-banner" id="doneBanner">All clear — space is locked up.</div>
   <button class="reset-btn" id="resetBtn">Reset checklist</button>
+  <div class="footer-note">
+    Want to make changes? Read more <a href="https://vanhack.ca/wiki/area/lockup">on the wiki</a> or make changes <a href="https://github.com/vhs/lockup-checklist">on GitHub</a>
+  </div>
 </div>
+  </main>
 
 <script>
   const items = document.querySelectorAll('.item');
